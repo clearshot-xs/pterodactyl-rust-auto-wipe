@@ -1,2 +1,2 @@
 # PterodactylRustAutoWipe
-Automatic rust server wipe scheduling tool for pterodactyl panel
+Scheduling tool to automatically wipe rust servers using the pterodactyl panel
