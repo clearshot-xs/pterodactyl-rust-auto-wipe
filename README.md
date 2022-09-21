@@ -20,7 +20,7 @@ Server ids can be found in the url when viewing the server in the panel (https:/
 
 # Configuration
 
-## Wipe Schedule
+### Wipe Schedule
 
 The wipe schedule uses a cron job and is based on the number of days since the first Thursday of the month (force wipe day). To build a wipe schedule count the number of days since the first Thursday of the month for each day you would like to wipe.
 
@@ -57,7 +57,7 @@ Using the calendar above as an example, the following wipe schedule will wipe we
 }
 ```
 
-## Deleting files
+### Deleting files
 
 Delete files with glob file matching starting from the root directory `/home/container`
 
@@ -76,7 +76,7 @@ Delete files with glob file matching starting from the root directory `/home/con
 }
 ```
 
-## Force Wipe
+### Force Wipe
 
 Rust updates are usually released around 2PM EST on the first Thursday of each month. The script creates a timer to watch for the latest Oxide mod update (umod.org) starting at 1PM EST on the first Thursday of the month and checks for an update every 2 minutes.
 
@@ -88,11 +88,11 @@ In the servers wipe schedule, 0 days since force wipe is considered force wipe d
 }
 ```
 
-## Server Messages
+### Server Messages
 
 Messages are broadcast to the server when a wipe is starting or when a new force wipe update has been released. A countdown will start based on `wipeCountdownSeconds` (default 5 minutes) and will countdown the last 30 seconds before the server restarts for wipe.
 
-## Map Seed / Custom Map URL
+### Map Seed / Custom Map URL
 
 Randomly generated map seeds, predefined map seeds and custom map urls are supported.
 
@@ -102,17 +102,19 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
 * Map seeds and map urls are randomly chosen from list.
 * Map seeds are randomly generated if both `seeds` and `maps` lists are empty.
 
-### Custom Map List
+#### Custom Map List
 ```json
 {
   "seeds": [],
   "maps": [
-    "https://link.to/my/custom/rust_map.map"
+    "https://link.to/my/custom/rust_map_1.map",
+    "https://link.to/my/custom/rust_map_2.map",
+    "https://link.to/my/custom/rust_map_3.map"
   ]
 }
 ```
 
-### Predefined Seed List
+#### Predefined Seed List
 ```json
 {
   "seeds": [
@@ -124,7 +126,7 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
 }
 ```
 
-## Example Configuration
+### Example Configuration
 ```json
 {
   "PTERO_API_URL": "https://pterodactyl.panel/api/client",
