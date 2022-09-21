@@ -1,0 +1,172 @@
+{
+  "PTERO_API_URL": "https://pterodactyl.panel/api/client",
+  "PTERO_API_KEY": "",
+  "forceWipeCron": "0 13 * * 4",
+  "forceWipeTimezone": "America/New_York",
+  "messages": {
+    "wipeStart": "[Auto Wipe] Server restarting for wipe in {0} minutes!",
+    "wipeCountdown": "[Auto Wipe] Server restarting for wipe in {0}s!",
+    "forceWipe": "[Auto Wipe] A new Rust update has been released! Please close Rust to download the update and rejoin when the server has wiped."
+  },
+  "servers": [
+    {
+      "enabled": true,
+      "name": "Weekly wipes every Thursday @ 2PM, monthly BP wipes",
+      "serverId": "0",
+      "cron": "0 14 * * *",
+      "timezone": "America/New_York",
+      "wipeCountdownSeconds": 300,
+      "seeds": [],
+      "maps": [],
+      "wipeSchedule": [
+        {
+          "daysSinceForceWipe": 0,
+          "bpWipe": true
+        },
+        {
+          "daysSinceForceWipe": 7,
+          "bpWipe": false
+        },
+        {
+          "daysSinceForceWipe": 14,
+          "bpWipe": false
+        },
+        {
+          "daysSinceForceWipe": 21,
+          "bpWipe": false
+        },
+        {
+          "daysSinceForceWipe": 28,
+          "bpWipe": false
+        }
+      ],
+      "filesToDeleteOnForceWipe": [
+        {
+          "root": "/server/rust",
+          "files": []
+        }
+      ],
+      "filesToDeleteOnWipe": [
+        {
+          "root": "/server/rust",
+          "files": [
+            "player.deaths.*.db*",
+            "player.identities.*.db*",
+            "player.states.*.db*",
+            "player.tokens.db*",
+            "sv.files.*.db*",
+            "*.map",
+            "*.sav*"
+          ]
+        },
+        {
+          "root": "/oxide/data/ServerRewards",
+          "files": [
+            "player_data.json"
+          ]
+        }
+      ]
+    },
+    {
+      "enabled": true,
+      "name": "Biweekly wipes on Thursday @ 2PM, monthly BP wipes",
+      "serverId": "0",
+      "cron": "0 14 * * *",
+      "timezone": "America/New_York",
+      "wipeCountdownSeconds": 300,
+      "seeds": [],
+      "maps": [],
+      "wipeSchedule": [
+        {
+          "daysSinceForceWipe": 0,
+          "bpWipe": true
+        },
+        {
+          "daysSinceForceWipe": 14,
+          "bpWipe": false
+        },
+        {
+          "daysSinceForceWipe": 28,
+          "bpWipe": false
+        }
+      ],
+      "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnWipe": [
+        {
+          "root": "/server/rust",
+          "files": [
+            "player.deaths.*.db*",
+            "player.identities.*.db*",
+            "player.states.*.db*",
+            "player.tokens.db*",
+            "sv.files.*.db*",
+            "*.map",
+            "*.sav*"
+          ]
+        }
+      ]
+    },
+    {
+      "enabled": true,
+      "name": "Monthly wipes on Thursday @ 2PM, monthly BP wipes",
+      "serverId": "0",
+      "cron": "0 14 * * *",
+      "timezone": "America/New_York",
+      "wipeCountdownSeconds": 300,
+      "seeds": [],
+      "maps": [],
+      "wipeSchedule": [
+        {
+          "daysSinceForceWipe": 0,
+          "bpWipe": true
+        }
+      ],
+      "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnWipe": [
+        {
+          "root": "/server/rust",
+          "files": [
+            "player.deaths.*.db*",
+            "player.identities.*.db*",
+            "player.states.*.db*",
+            "player.tokens.db*",
+            "sv.files.*.db*",
+            "*.map",
+            "*.sav*"
+          ]
+        }
+      ]
+    },
+    {
+      "enabled": true,
+      "name": "Monthly wipes on Thursday @ 2PM, no BP wipes",
+      "serverId": "0",
+      "cron": "0 14 * * *",
+      "timezone": "America/New_York",
+      "wipeCountdownSeconds": 300,
+      "seeds": [],
+      "maps": [],
+      "wipeSchedule": [
+        {
+          "daysSinceForceWipe": 0,
+          "bpWipe": false
+        }
+      ],
+      "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnWipe": [
+        {
+          "root": "/server/rust",
+          "files": [
+            "player.deaths.*.db*",
+            "player.identities.*.db*",
+            "player.states.*.db*",
+            "player.tokens.db*",
+            "sv.files.*.db*",
+            "*.map",
+            "*.sav*"
+          ]
+        }
+      ]
+    }
+  ]
+}
