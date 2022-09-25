@@ -12,7 +12,6 @@
     "dayjs": "^1.11.5",
     "lodash.sample": "^4.2.1",
     "micromatch": "^4.0.5",
-    "moment": "^2.29.4",
     "node-schedule": "^2.1.0"
   }
 }
