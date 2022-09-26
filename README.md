@@ -57,6 +57,18 @@ Using the calendar above as an example, the following wipe schedule will wipe we
 }
 ```
 
+### Force Wipe
+
+Rust updates are usually released around 2PM EST on the first Thursday of each month. The script creates a timer to watch for the latest Oxide mod update (umod.org) starting at 1PM EST on the first Thursday of the month and checks for an update every 2 minutes.
+
+In the servers wipe schedule, 0 days since force wipe is considered force wipe day.
+```json
+{
+  "daysSinceForceWipe": 0,
+  "bpWipe": true
+}
+```
+
 ### Deleting files
 
 Delete files with glob file matching starting from the root directory `/home/container`
@@ -73,18 +85,6 @@ Delete files with glob file matching starting from the root directory `/home/con
     "*.map",
     "*.sav*"
   ]
-}
-```
-
-### Force Wipe
-
-Rust updates are usually released around 2PM EST on the first Thursday of each month. The script creates a timer to watch for the latest Oxide mod update (umod.org) starting at 1PM EST on the first Thursday of the month and checks for an update every 2 minutes.
-
-In the servers wipe schedule, 0 days since force wipe is considered force wipe day.
-```json
-{
-  "daysSinceForceWipe": 0,
-  "bpWipe": true
 }
 ```
 
@@ -205,12 +205,21 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
 
 * Clone git repo to a new directory
 * Build `config.json` based on `config-example.json`
-* Build docker image
-* Create docker container with built image
+* Pull latest image or build docker image from repo
+* Create docker container with image
 
+#### Pull Latest Docker Image
+```console
+docker pull ghcr.io/clearshot-xs/pterodactyl-rust-auto-wipe:latest
 ```
-docker build . -t pterodactyl-rust-auto-wipe:latest
 
+#### Build Docker Image
+```console
+docker build . -t pterodactyl-rust-auto-wipe:latest
+```
+
+#### Create Container
+```console
 docker run -d \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/logs:/app/logs \
