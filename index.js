@@ -84,7 +84,7 @@ schedule.scheduleJob(
           }
         })
         .catch(err => {
-          console.log(`error finding latest oxide version`, 'ERROR: ', err & err.message ? err.message : '');
+          console.log(`error finding latest oxide version`, 'ERROR:', err & err.message ? err.message : '');
         });
 
         if (checks >= 120) {
@@ -100,19 +100,24 @@ for (const wipeCfg of config.servers) {
   if (!wipeCfg.enabled)
     continue;
 
-  console.log(`starting schedule for ${wipeCfg.name} (${wipeCfg.serverId}) - cron: '${wipeCfg.cron}' (${wipeCfg.timezone})`);
-  schedule.scheduleJob(
-    {
-      rule: wipeCfg.cron,
-      tz: wipeCfg.timezone
-    },
-    () => {
-      let wipeSchedule = getWipeSchedule(wipeCfg);
-      if (!wipeSchedule.isTodayFirstThursday && wipeSchedule.schedule.length) { // ignore if force wipe day
-        startWipe(wipeCfg, wipeSchedule);
-      }
-    }
-  );
+  getServer(wipeCfg.serverId)
+    .then(data => {
+      if (!data || !Object.keys(data).length) return;
+
+      console.log(`starting schedule for ${data.attributes.name} (${wipeCfg.serverId}) - cron: '${wipeCfg.cron}' (${wipeCfg.timezone})`);
+      schedule.scheduleJob(
+        {
+          rule: wipeCfg.cron,
+          tz: wipeCfg.timezone
+        },
+        () => {
+          let wipeSchedule = getWipeSchedule(wipeCfg);
+          if (!wipeSchedule.isTodayFirstThursday && wipeSchedule.schedule.length) { // ignore if force wipe day
+            startWipe(wipeCfg, wipeSchedule);
+          }
+        }
+      );
+    });
 }
 
 function getWipeSchedule(wipeCfg) {
@@ -152,7 +157,15 @@ function startWipe(wipeCfg, wipeSchedule, isForceWipe = false) {
       loggers[wipeCfg.serverId] = new Console({
         stdout: fs.createWriteStream(path.resolve(logDir, `${wipeCfg.serverId}-${wipeSchedule.today.format('hh-mm-a')}-log.txt`))
       });
-      loggers[wipeCfg.serverId].log(`wiping ${wipeCfg.name}`);
+
+      return getServer(wipeCfg.serverId);
+    })
+    .then(data => {
+      if (!data || !Object.keys(data).length) {
+        throw new Error(`unable to find server ${wipeCfg.serverId}`);
+      }
+
+      loggers[wipeCfg.serverId].log(`${data.attributes.name} (${wipeCfg.serverId})`);
       loggers[wipeCfg.serverId].log(`wipe started on ${wipeSchedule.today.format('ddd MMM D YYYY @ hh:mm a')} (${wipeCfg.timezone})`);
       loggers[wipeCfg.serverId].log('wipe schedule', wipeSchedule.schedule);
       loggers[wipeCfg.serverId].log(
@@ -208,10 +221,20 @@ function startWipe(wipeCfg, wipeSchedule, isForceWipe = false) {
       loggers[wipeCfg.serverId].log('wipe complete');
     })
     .catch(err => {
-      loggers[wipeCfg.serverId].log(`error wiping server ${wipeCfg.serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+      loggers[wipeCfg.serverId].log(`error wiping server ${wipeCfg.serverId}`, 'ERROR:', err && err.message ? err.message : '');
     })
     .finally(() => {
       delete loggers[wipeCfg.serverId];
+    });
+}
+
+function getServer(serverId) {
+  return pteroAPI.get(`/servers/${serverId}`)
+    .then(res => res.data || {})
+    .catch(err => {
+      let msg = [`error retreiving server details for ${serverId}`, 'ERROR:', err && err.message ? err.message : ''];
+      if (loggers[serverId]) loggers[serverId].log(...msg);
+      else console.log(...msg);
     });
 }
 
@@ -256,14 +279,14 @@ function startServer(serverId) {
               retries++;
             })
             .catch(err => {
-              loggers[serverId].log(`error checking server ${serverId} status`, 'ERROR: ', err && err.message ? err.message : '');
+              loggers[serverId].log(`error checking server ${serverId} status`, 'ERROR:', err && err.message ? err.message : '');
               clearInterval(checkStatus);
               reject(new Error(`error checking server ${serverId} status`));
             });
         }, 60000);
       })
       .catch(err => {
-        loggers[serverId].log(`error starting server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+        loggers[serverId].log(`error starting server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
         reject();
       });
   });
@@ -293,14 +316,14 @@ function stopServer(serverId) {
               retries++;
             })
             .catch(err => {
-              loggers[serverId].log(`error checking server ${serverId} status`, 'ERROR: ', err && err.message ? err.message : '');
+              loggers[serverId].log(`error checking server ${serverId} status`, 'ERROR:', err && err.message ? err.message : '');
               clearInterval(checkStatus);
               reject(new Error(`error checking server ${serverId} status`));
             });
         }, 10000);
       })
       .catch(err => {
-        loggers[serverId].log(`error stopping server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+        loggers[serverId].log(`error stopping server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
         reject();
       });
   });
@@ -329,7 +352,7 @@ function findFiles(serverId, filesToMatch) {
       return matchedFiles;
     })
     .catch(err => {
-      loggers[serverId].log(`error finding files for server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+      loggers[serverId].log(`error finding files for server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
     });
 }
 
@@ -342,7 +365,7 @@ function deleteFiles(serverId, files) {
       loggers[serverId].log(`successfully deleted ${files.length} files`);
     })
     .catch(err => {
-      loggers[serverId].log(`error deleting files for server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+      loggers[serverId].log(`error deleting files for server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
     });
 }
 
@@ -366,6 +389,10 @@ function deleteMatchedFiles(wipeCfg, isForceWipe = false, isBPWipe = false) {
       ]
     };
     findFilesPromises.push(findFiles(wipeCfg.serverId, bpFiles));
+
+    for (const fileList of wipeCfg.filesToDeleteOnBPWipe) {
+      findFilesPromises.push(findFiles(wipeCfg.serverId, fileList));
+    }
   }
 
   return Promise.allSettled(findFilesPromises)
@@ -386,7 +413,7 @@ function deleteMatchedFiles(wipeCfg, isForceWipe = false, isBPWipe = false) {
 function updateServerVariable(serverId, varKey, varValue) {
   return pteroAPI.put(`/servers/${serverId}/startup/variable`, { key: varKey, value: `${varValue}` })
     .catch(err => {
-      loggers[serverId].log(`error changing server variable (var: ${varKey}, value: ${varValue}) for server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+      loggers[serverId].log(`error changing server variable (var: ${varKey}, value: ${varValue}) for server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
     });
 }
 
@@ -404,6 +431,6 @@ function sendMessage(serverId, msg) {
   loggers[serverId].log(`server ${serverId} SEND MESSAGE:`, msg);
   return pteroAPI.post(`/servers/${serverId}/command`, { command: `say ${msg}` })
     .catch(err => {
-      loggers[serverId].log(`error sending message for server ${serverId}`, 'ERROR: ', err && err.message ? err.message : '');
+      loggers[serverId].log(`error sending message for server ${serverId}`, 'ERROR:', err && err.message ? err.message : '');
     });
 }

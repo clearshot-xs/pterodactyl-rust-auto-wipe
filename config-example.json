@@ -10,8 +10,8 @@
   },
   "servers": [
     {
+      "_comment": "Weekly wipes every Thursday @ 2PM, monthly BP wipes",
       "enabled": true,
-      "name": "Weekly wipes every Thursday @ 2PM, monthly BP wipes",
       "serverId": "0",
       "cron": "0 14 * * *",
       "timezone": "America/New_York",
@@ -40,12 +40,8 @@
           "bpWipe": false
         }
       ],
-      "filesToDeleteOnForceWipe": [
-        {
-          "root": "/server/rust",
-          "files": []
-        }
-      ],
+      "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnBPWipe": [],
       "filesToDeleteOnWipe": [
         {
           "root": "/server/rust",
@@ -68,8 +64,8 @@
       ]
     },
     {
+      "_comment": "Biweekly wipes on Thursday @ 2PM, monthly BP wipes",
       "enabled": true,
-      "name": "Biweekly wipes on Thursday @ 2PM, monthly BP wipes",
       "serverId": "0",
       "cron": "0 14 * * *",
       "timezone": "America/New_York",
@@ -91,6 +87,7 @@
         }
       ],
       "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnBPWipe": [],
       "filesToDeleteOnWipe": [
         {
           "root": "/server/rust",
@@ -107,8 +104,8 @@
       ]
     },
     {
+      "_comment": "Monthly wipes on Thursday @ 2PM, monthly BP wipes",
       "enabled": true,
-      "name": "Monthly wipes on Thursday @ 2PM, monthly BP wipes",
       "serverId": "0",
       "cron": "0 14 * * *",
       "timezone": "America/New_York",
@@ -122,6 +119,7 @@
         }
       ],
       "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnBPWipe": [],
       "filesToDeleteOnWipe": [
         {
           "root": "/server/rust",
@@ -138,8 +136,8 @@
       ]
     },
     {
+      "_comment": "Monthly wipes on Thursday @ 2PM, no BP wipes",
       "enabled": true,
-      "name": "Monthly wipes on Thursday @ 2PM, no BP wipes",
       "serverId": "0",
       "cron": "0 14 * * *",
       "timezone": "America/New_York",
@@ -153,6 +151,7 @@
         }
       ],
       "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnBPWipe": [],
       "filesToDeleteOnWipe": [
         {
           "root": "/server/rust",

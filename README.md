@@ -88,6 +88,14 @@ Delete files with glob file matching starting from the root directory `/home/con
 }
 ```
 
+Files can be deleted based on the type of wipe by using the following server config options.
+
+* `filesToDeleteOnForceWipe` - Files to delete on force wipe day
+* `filesToDeleteOnBPWipe` - Files to delete on BP wipe day
+* `filesToDeleteOnWipe` - Files to delete on every wipe day
+
+Note: Blueprint files are automatically deleted on BP wipe days, you do not need to specify blueprint files within `filesToDeleteOnBPWipe`. The list is intended for any other files you would like to delete on BP wipe days.
+
 ### Server Messages
 
 Messages are broadcast to the server when a wipe is starting or when a new force wipe update has been released. A countdown will start based on `wipeCountdownSeconds` (default 5 minutes) and will countdown the last 30 seconds before the server restarts for wipe.
@@ -140,8 +148,8 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
   },
   "servers": [
     {
+      "_comment": "Weekly wipes every Thursday @ 2PM, monthly BP wipes",
       "enabled": true,
-      "name": "Weekly wipes every Thursday @ 2PM, monthly BP wipes",
       "serverId": "0",
       "cron": "0 14 * * *",
       "timezone": "America/New_York",
@@ -170,12 +178,8 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
           "bpWipe": false
         }
       ],
-      "filesToDeleteOnForceWipe": [
-        {
-          "root": "/server/rust",
-          "files": []
-        }
-      ],
+      "filesToDeleteOnForceWipe": [],
+      "filesToDeleteOnBPWipe": [],
       "filesToDeleteOnWipe": [
         {
           "root": "/server/rust",
@@ -208,18 +212,21 @@ Randomly generated map seeds, predefined map seeds and custom map urls are suppo
 * Pull latest image or build docker image from repo
 * Create docker container with image
 
-#### Pull Latest Docker Image
+### Pull Latest Docker Image
 ```console
 docker pull ghcr.io/clearshot-xs/pterodactyl-rust-auto-wipe:latest
+
+docker run -d \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  -v $(pwd)/logs:/app/logs \
+  --name pterodactyl-rust-auto-wipe \
+  ghcr.io/clearshot-xs/pterodactyl-rust-auto-wipe:latest
 ```
 
-#### Build Docker Image
+### Build Docker Image
 ```console
 docker build . -t pterodactyl-rust-auto-wipe:latest
-```
 
-#### Create Container
-```console
 docker run -d \
   -v $(pwd)/config.json:/app/config.json:ro \
   -v $(pwd)/logs:/app/logs \
